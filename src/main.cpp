@@ -7,27 +7,20 @@ class Life
         using gen_t = size_t;
         using hash_t = size_t;
 
-        int largura, altura;
-        bool **matriz;
-        vector<int> alive_cells;
-        hash_t hash;
-        gen_t generation;
+        int _largura, _altura;
+        bool **_matriz;
+        vector<int> _aliveCells;
+        hash_t _hash;
+        gen_t _generation;
 
         std::string generateString(vector<int> &vetor){
             std::string result;
+            std::stringstream ss;
 
-            int *int_atual = new int;
-            char *char_atual;
-            for(int i = 0; i < vetor.size(); i++){
-                *int_atual = vetor[i];
-
-                for(int j = 0; j < sizeof(int) / sizeof(char); j++){
-                    char_atual = ((byte *) int_atual + (j * sizeof(char)));
-                    result.push_back(*char_atual);
-                }
+            for(int i = 0; i < vetor[i]; i++){
+                ss << vetor[i] << " ";
             }
-
-            delete int_atual;
+            result = ss.str();
             return result;
         }
 
@@ -36,15 +29,20 @@ class Life
             //Paulo implementa
         }
 
-        Life(Life &pastInstance){
+        //copy constructor OU gerar com instancia antiga
+        Life(const Life &pastInstance, bool createCopy = true){
             //Amanda implementa
         }
 
+        //default constructor
+        //move constructor
+        //move assignment
+        //move constructor
+
         ~Life(){
             for(int i = 0; i < this.altura; i++)
-                delete[] matriz[i];
-
-            delete[] matriz;
+                delete[] _matriz[i];
+            delete[] _matriz;
         }
 
         Life & operator=( const Life& rhs ){
@@ -52,21 +50,21 @@ class Life
         }
 
         bool isExtinct(){
-            if(alive_cells.size() == 0){
+            if(_aliveCells.size() == 0){
                 return true;
             }
         }
 
-        void createHash(std::hash<std::string> &Life_hash){
-            this.hash = Life_hash(generateString(alive_cells));
+        void createHash(std::hash<std::string> &Hasher){
+            _hash = Hasher(generateString(_aliveCells));
         };
 
         void addToDict(map<hash_t, gen_t> &HashDict){
-            HashDict[this.hash] = gen_t;
+            HashDict[_hash] = _generation;
         }
 
         bool isStable(map<hash_t, gen_t> &HashDict){
-            if(HashDict.count(this.hash) > 0){
+            if(HashDict.count(_hash) > 0){
                 return true;
             }else{
                 return false;
@@ -74,29 +72,39 @@ class Life
         }
 };
 
+//operador << pra imprimir
+
 int main(int argc, char *argv[])
 {
     //recuperar nome do arquivo da linha de comando
     //instanciar classe usando nome do arquivo
     //Amanda implementa
 
+    std::map<size_t, size_t> HashDict;
+    std::hash<std::string> Hasher;
+
     Life currentGeneration(#nome_do_arquivo);
 
     while(true){
+        //imprimir atual
+        std::cout << currentGeneration; //iteracao atual e mapa completo
+
         if(currentGeneration.isExtinct()){
             //Paulo implementa
+
+            return 0;
         }
 
-        currentGeneration.createHash();
-        if(currentGeneration.isStable()){
+        currentGeneration.createHash(Hasher);
+        if(currentGeneration.isStable(HashDict)){
             //Amanda implementa
+
+
+            return 0;
         }
 
-        //posso fazer currentGeneration(currentGeneration)?
+        Life nextGeneration(currentGeneration, false);
 
-        Life nextGeneration(currentGeneration);
-        //destrutor para currentGeneration
         currentGeneration = nextGeneration;
-        //destrutor para nextGeneration
     }
 }
