@@ -28,17 +28,16 @@ class Life
             }
 
             delete int_atual;
-
             return result;
         }
 
     public:
         Life(std::string &inputFile){
-
+            //Paulo implementa
         }
 
         Life(Life &pastInstance){
-
+            //Amanda implementa
         }
 
         ~Life(){
@@ -49,11 +48,7 @@ class Life
         }
 
         Life & operator=( const Life& rhs ){
-
-        }
-
-        Life & operator<( const Life& rhs ){
-            //comparar os vetores
+            //Amanda e Paulo implementam
         }
 
         bool isExtinct(){
@@ -79,8 +74,29 @@ class Life
         }
 };
 
-int main( void )
+int main(int argc, char *argv[])
 {
-    Life nino(1 , 2);
-    return 0;
+    //recuperar nome do arquivo da linha de comando
+    //instanciar classe usando nome do arquivo
+    //Amanda implementa
+
+    Life currentGeneration(#nome_do_arquivo);
+
+    while(true){
+        if(currentGeneration.isExtinct()){
+            //Paulo implementa
+        }
+
+        currentGeneration.createHash();
+        if(currentGeneration.isStable()){
+            //Amanda implementa
+        }
+
+        //posso fazer currentGeneration(currentGeneration)?
+
+        Life nextGeneration(currentGeneration);
+        //destrutor para currentGeneration
+        currentGeneration = nextGeneration;
+        //destrutor para nextGeneration
+    }
 }
