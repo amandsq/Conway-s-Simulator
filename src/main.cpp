@@ -1,70 +1,86 @@
 #include <iostream>
 
+
 class Life
 {
     private:
+        using gen_t = size_t;
+        using hash_t = size_t;
+
         int largura, altura;
         bool **matriz;
         vector<int> alive_cells;
+        hash_t hash;
+        gen_t generation;
 
+        std::string generateString(vector<int> &vetor){
+            std::string result;
 
-    public:
-        Life(int largura, int altura)
-        {
-            std::cout << "Criando uma instancia de Life\n";
-            this.largura = largura;
-            this.altura = altura;
+            int *int_atual = new int;
+            char *char_atual;
+            for(int i = 0; i < vetor.size(); i++){
+                *int_atual = vetor[i];
 
-            matriz = new bool[this.altura];
-
-            for(int i = 0; i < this.altura; i++)
-                matriz[i] = new bool[this.largura];
-        }
-
-        void setAlivefromInput(vector<string> &input, char alive_char){
-            for(int i = 0; i < input.size(); i++){
-                for(int j = 0; j < input[i].size(); j++){
-                    if(input[i][j] == alive_char)
-                        alive_cells.push_back(i * altura + j);
+                for(int j = 0; j < sizeof(int) / sizeof(char); j++){
+                    char_atual = ((byte *) int_atual + (j * sizeof(char)));
+                    result.push_back(*char_atual);
                 }
             }
+
+            delete int_atual;
+
+            return result;
         }
 
-        ~Life()
-        {
+    public:
+        Life(std::string &inputFile){
+
+        }
+
+        Life(Life &pastInstance){
+
+        }
+
+        ~Life(){
             for(int i = 0; i < this.altura; i++)
                 delete[] matriz[i];
 
             delete[] matriz;
         }
 
-        IntCell & operator=( const IntCell& rhs )
-        {
-            * this->m_ptr_value = * rhs.m_ptr_value;
+        Life & operator=( const Life& rhs ){
 
-            return *this;
+        }
+
+        Life & operator<( const Life& rhs ){
+            //comparar os vetores
+        }
+
+        bool isExtinct(){
+            if(alive_cells.size() == 0){
+                return true;
+            }
+        }
+
+        void createHash(std::hash<std::string> &Life_hash){
+            this.hash = Life_hash(generateString(alive_cells));
+        };
+
+        void addToDict(map<hash_t, gen_t> &HashDict){
+            HashDict[this.hash] = gen_t;
+        }
+
+        bool isStable(map<hash_t, gen_t> &HashDict){
+            if(HashDict.count(this.hash) > 0){
+                return true;
+            }else{
+                return false;
+            }
         }
 };
 
 int main( void )
 {
-    IntCell ic; // É como se estivesse chamando -> IntCell( val = 0)
-    IntCell ic2( 100 ); // -> IntCell(100)
-    IntCell ic3(-5);
-
-    ic = ic2;  // ic.operator=( ic2 ); // comando equivalente.
-
-    ic = ic2 = ic3; // ic.operator=(ic2.operator=(ic3)); // comando equivalente.
-
-    // Deve aparecer 100,100.
-    std::cout << "ic = " << ic.read() << "\n";
-    std::cout << "ic2 = " << ic2.read() << "\n";
-
-    ic.write( 10 ); // Copia "profunda" de memória.
-
-    // Deveria aparecer 10, 100.
-    std::cout << "ic = " << ic.read() << "\n";
-    std::cout << "ic2 = " << ic2.read() << "\n";
-
+    Life nino(1 , 2);
     return 0;
 }
