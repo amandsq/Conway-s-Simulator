@@ -9,18 +9,18 @@ class Life
 
         size_t _height, _width; //as dimensões da matriz
         bool **_matriz; // matriz que será representada por ponteiro de ponteiro de booleando
-        vector<int> _aliveCells; //vetor que guarda as coordenadas (no vetor "grande") das celulas vivas
+        vector<std::pair<int,int>> _aliveCells; //vetor que guarda as coordenadas (no vetor "grande") das celulas vivas
         hash_t _hash; //hash do vetor _aliveCells
         gen_t _generation; // variavel que indica a geração atual
 
 
         //criar uma string com os valores que tem no vetor que guarda as celulas vivas
-        std::string generateString(const vector<int> &vetor) {
+        std::string generateString(const vector<std::pair<int,int>> &vetor) {
             std::stringstream ss;
 
             // for para colocar os valores do vetor em um stringstream
             for(int i = 0; i < vetor.size(); i++){
-                ss << vetor[i] << " ";
+                ss << vetor[i].first << " " << vetor[i].second << " ";
             }
             return ss.str(); //transforma um fluxo em uma string e retorna essa string
         }
@@ -67,7 +67,7 @@ class Life
                     ss >> temp_char;
                     if(temp_char == alive_char){
                         _matriz[i][j] = true;
-                        _aliveCells.push_back(i * _width + j);
+                        _aliveCells.push_back(std::make_pair(i, j));
                     }else{
                         _matriz[i][j] = false;
                     }
@@ -81,13 +81,25 @@ class Life
         }
 
         //copy constructor OU gerar com instancia antiga
-        Life(const Life &pastInstance, bool createCopy = true){
+        Life(const Life &otherInstance, bool newGen = true){
             //Amanda implementa
-
-            if(createCopy){//para criar copia
-                std::cout << "Copy constructor being used" << std::endl;
-            }else{//para gerar nova geracao
+            if(newGen){//para gerar nova geracao
                 std::cout << "Next generation being created" << std::endl;
+                _height = pastInstance.getHeight();
+                _width = pastInstance.getWidth();
+                _generation = pastInstance.getGeneration();
+
+                _matriz = alocateMatrix(_height, _width);
+
+                //analisar vetor de celulas vivas (da instancia passada)
+                //para cada celula viva (da instancia passada), contar as celulas vivas ao redor
+                //se o contador for 2 ou 3, tornar a celula da instancia (na coordenadas) atual viva
+                //analisar vetor de celulas vizinhas mortas
+                //fazer a mesma coisa para as celulas mortas
+
+
+            }else{//para criar copia
+                std::cout << "Copy constructor being used" << std::endl;
             }
         }
 
@@ -154,7 +166,7 @@ class Life
         size_t getHeight() const{return _height;}
         size_t getWidth() const{return _width;}
         gen_t getCycleHead(std::map<hash_t, gen_t> &HashDict) const{return HashDict[_hash];}
-        gen_t getCurrGeneration() const{return _generation};
+        gen_t getGeneration() const{return _generation};
 
 };
 
