@@ -25,6 +25,7 @@ class Life
             return ss.str(); //transforma um fluxo em uma string e retorna essa string
         }
 
+        //Funcao local para alocacao de matriz
         bool **alocateMatrix(size_t _height, size_t _width){
             bool **ans = new bool*[_height];
 
@@ -82,12 +83,21 @@ class Life
         //copy constructor OU gerar com instancia antiga
         Life(const Life &pastInstance, bool createCopy = true){
             //Amanda implementa
+
+            if(createCopy){//para criar copia
+                std::cout << "Copy constructor being used" << std::endl;
+            }else{//para gerar nova geracao
+                std::cout << "Next generation being created" << std::endl;
+            }
         }
 
-        //default constructor
+        Life( void ):_height(0), _width(0), _generation(0), _hash(0), _matriz(NULL){
+            std::cout << "Default constructor being used" << std::endl;
+        }
         //move constructor
         //move assignment
 
+        //Destrutor
         ~Life(){
             for(int i = 0; i < this.altura; i++)
                 delete[] _matriz[i];
@@ -96,6 +106,24 @@ class Life
 
         /*-------------------------------SOBRECARGA-DE-OPERADORES----------------------------*/
 
+        //Copy assignment
+        /*
+        Segue a mesma logica de:
+        string a,b;
+        a = b;
+
+        Tanto a como b sao objetos da classe string. Usando o copy assignment copiamos
+        os valores que estao em b para a.
+
+        No nosso programa:
+        Life geracao, copia_dessa_geracao;
+        copia_dessa_geracao = geracao;
+
+        copia_dessa_geracao vai receber todos os valores de geracao
+
+        rhs = right hand side = elemento a direita do sinal '='
+        aqui, rhs será geracao e o objeto atual seria copia_dessa_geracao
+        */
         Life & operator=( const Life& rhs ){
             //Amanda e Paulo implementam
         }
@@ -126,15 +154,20 @@ class Life
         size_t getHeight() const{return _height;}
         size_t getWidth() const{return _width;}
         gen_t getCycleHead(std::map<hash_t, gen_t> &HashDict) const{return HashDict[_hash];}
-        
+        gen_t getCurrGeneration() const{return _generation};
+
 };
 
 //sobrecarga de operador << para impressao em stream
 friend ostream& operator<<(ostream& os, const Life& life)
 {
+    //impressao da geracao atual
+    os << "Current generation: " << life.getCurrGeneration() << '\n';
+
     size_t height = life.getHeight();
     size_t width = life.getWidth();
 
+    //impressao da matriz
     for(size_t i = 0; i < height; i++){
         for(size_t j = 0; j < width; j++){
             if(life.isAlive(i, j)) so << '* ';
@@ -150,22 +183,30 @@ int main(int argc, char *argv[])
     //instanciar classe usando nome do arquivo
     //Amanda implementa
 
-    std::map<size_t, size_t> HashDict;
+    //objeto que cria hash, dada uma string
     std::hash<std::string> Hasher;
+    //dicionario que armazerana hash e a geracao que esse hash aconteceu
+    std::map<size_t, size_t> HashDict;
 
+    //inicializando a geracao atual com o arquivo de input
     Life currentGeneration(#nome_do_arquivo);
 
+    //laco principal de execucao do programa
     while(true){
-        //imprimir atual
-        std::cout << currentGeneration; //iteracao atual e mapa completo
+        //impressao da geracao e da matriz atual
+        std::cout << currentGeneration << std::endl;
 
+        //checando se a configuracao atual está extinta
         if(currentGeneration.isExtinct()){
             //Paulo implementa
 
             return 0;
         }
 
+        //cirando um hash para a geracao atual
         currentGeneration.createHash(Hasher);
+
+        //checando se a geracao atual é estavel = chegando se esse hash ja aconteceu no dicionario
         if(currentGeneration.isStable(HashDict)){
             //Amanda implementa
 
@@ -173,8 +214,10 @@ int main(int argc, char *argv[])
             return 0;
         }
 
+        //criando a nova geracao, a partir da geracao atual
         Life nextGeneration(currentGeneration, false);
 
+        //atualizando a geracao atual, e invalidando e desalocando a varaivel nextGeneration
         currentGeneration = nextGeneration;
     }
 }
