@@ -35,6 +35,15 @@ class Life
             return ans;
         }
 
+        //Funcao que conta as celulas vivas
+        int countAliveCells (size_t line, size_t column){
+            int count = 0;
+                if (_matriz[line, column]) {
+                    count++;
+                } 
+
+        }
+
     public:
         /*-------------------------------CONSTRUTORES-E-DESTRUTOR----------------------------*/
 
