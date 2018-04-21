@@ -239,7 +239,25 @@ class Life
         aqui, rhs será geracao e o objeto atual seria copia_dessa_geracao
         */
         Life & operator=( const Life& rhs ){
-            //TODO Amanda e Paulo implementam
+            //so realizar operacoes de copia e desalocacao caso sejam objetos diferentes
+            if (this != &rhs){
+                //Dimensoes, geracao, hash e _aliveCells permanecem os mesmos
+                _height = rhs._height;
+                _width = rhs._width;
+                _generation = rhs._generation;
+                _aliveCells = rhs._aliveCells;
+                _hash = rhs._hash;
+
+                 //Alocando espaco para nova matriz
+                _matriz = alocateMatrix(_height, _width);
+
+                //Copiando elementos da matriz passada para matriz atual
+                for(size_t i = 0; i < _height; i++){
+                    memcpy(_matriz[i], rhs._matriz[i], _width);
+                }
+                //retorno
+                return *this;
+            }
         }
 
         //Atribuicao move
