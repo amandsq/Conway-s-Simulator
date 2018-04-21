@@ -1,4 +1,4 @@
-#include <iostream> //cout
+#include <iostream> //cout, osstream
 #include <fstream> //filestream
 #include <sstream> //stringstream
 #include <cstring> //memcpy
@@ -339,6 +339,7 @@ class Life
         }
         /*-------------------------------------FUNCOES---------------------------------------*/
 
+        //funcao booleana que retorna verdadeiro caso celula nas coordenadas passadas estiverem vivas
         bool isAlive(size_t y, size_t x) const{return _matriz[y][x];}
 
         //funcao booleana que retorna verdadeiro se nao existirem celulas vivias, falso, caso contrario
@@ -415,8 +416,7 @@ int main(int argc, char *argv[])
 
         //checando se a geracao atual é estavel = chegando se esse hash ja aconteceu no dicionario
         if(currentGeneration.isStable(HashDict)){
-            //TODO
-            //Amanda implementa
+            //TODO Amanda implementa
 
 
             return 0;
