@@ -241,23 +241,29 @@ class Life
         Life & operator=( const Life& rhs ){
             //so realizar operacoes de copia e desalocacao caso sejam objetos diferentes
             if (this != &rhs){
-                //Dimensoes, geracao, hash e _aliveCells permanecem os mesmos
-                _height = rhs._height;
-                _width = rhs._width;
-                _generation = rhs._generation;
-                _aliveCells = rhs._aliveCells;
-                _hash = rhs._hash;
-
-                 //Alocando espaco para nova matriz
-                _matriz = alocateMatrix(_height, _width);
-
-                //Copiando elementos da matriz passada para matriz atual
-                for(size_t i = 0; i < _height; i++){
-                    memcpy(_matriz[i], rhs._matriz[i], _width);
+                //Delete na matriz atual, caso ela nao seja nula
+                if(_matriz != NULL){
+                    for(int i = 0; i < _height; i++)
+                        delete[] _matriz[i];
+                    delete[] _matriz;
                 }
-                //retorno
-                return *this;
             }
+            //Dimensoes, geracao, hash e _aliveCells permanecem os mesmos
+            _height = rhs._height;
+            _width = rhs._width;
+            _generation = rhs._generation;
+            _aliveCells = rhs._aliveCells;
+            _hash = rhs._hash;
+
+             //Alocando espaco para nova matriz
+            _matriz = alocateMatrix(_height, _width);
+
+            //Copiando elementos da matriz passada para matriz atual
+            for(size_t i = 0; i < _height; i++){
+                memcpy(_matriz[i], rhs._matriz[i], _width);
+            }
+            //retorno
+            return *this;
         }
 
         //Atribuicao move
