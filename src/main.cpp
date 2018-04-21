@@ -37,11 +37,28 @@ class Life
 
         //Funcao que conta as celulas vivas
         int countAliveCells (size_t line, size_t column){
-            int count = 0;
-                if (_matriz[line, column]) {
-                    count++;
-                } 
 
+            int count = 0;
+            int analizedLine, analizedColumn;
+            for (int i = -1; i < 2; i++) {
+                analizedLine = line + i;
+                if (analizedLine < 0) {
+                    analizedLine = height - 1;
+                } else if (analizedLine >= _height) {
+                    analizedLine = 0;
+                }
+                for (int j = -1; j <= 1; j++) {
+                    analizedColumn = column + j;
+                    if (analizedColumn < 0) {
+                        analizedColumn = _width - 1;
+                    } else if (analizedColumn >= _width) {
+                        analizedColumn = 0;
+                    }
+                    if (_matriz[analizedLine][analizedColumn]){
+                        count ++;
+                    }
+                }
+            }
         }
 
     public:
