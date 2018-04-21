@@ -220,6 +220,29 @@ class Life
 
         /*-------------------------------SOBRECARGA-DE-OPERADORES----------------------------*/
 
+        //Atribuicao move
+        Life& operator=(Life&& otherInstance){
+            //so realizar operacoes de copia e desalocacao caso sejam objetos diferentes
+            if (this != &otherInstance){
+                *this = otherInstance;
+
+                //Invalidando instancia passada
+                //Desalocacao da matriz da instancia passada
+                for(int i = 0; i < otherInstance._height; i++)
+                delete[] otherInstance._matriz[i];
+                delete[] otherInstance._matriz;
+
+                //Invalidando atributos da instancia passada
+                otherInstance._height = 0;
+                otherInstance._width = 0;
+                otherInstance._generation = 0;
+                otherInstance._aliveCells.clear();
+                otherInstance._hash = 0;
+            }
+            //retorno
+            return *this;
+        }
+
         //Copy assignment
         /*
         Segue a mesma logica de:
@@ -241,74 +264,31 @@ class Life
         Life & operator=( const Life& rhs ){
             //so realizar operacoes de copia e desalocacao caso sejam objetos diferentes
             if (this != &rhs){
-                //Delete na matriz atual, caso ela nao seja nula
-                if(_matriz != NULL){
-                    for(int i = 0; i < _height; i++)
-                        delete[] _matriz[i];
-                    delete[] _matriz;
-                }
-            }
-            //Dimensoes, geracao, hash e _aliveCells permanecem os mesmos
-            _height = rhs._height;
-            _width = rhs._width;
-            _generation = rhs._generation;
-            _aliveCells = rhs._aliveCells;
-            _hash = rhs._hash;
-
-             //Alocando espaco para nova matriz
-            _matriz = alocateMatrix(_height, _width);
-
-            //Copiando elementos da matriz passada para matriz atual
-            for(size_t i = 0; i < _height; i++){
-                memcpy(_matriz[i], rhs._matriz[i], _width);
-            }
-            //retorno
-            return *this;
-        }
-
-        //Atribuicao move
-        Life& operator=(Life&& otherInstance){
-            //so realizar operacoes de copia e desalocacao caso sejam objetos diferentes
-            if (this != &otherInstance){
-
-                //Delete na matriz atual, caso ela nao seja nula
-                if(_matriz != NULL){
-                    for(int i = 0; i < _height; i++)
-                        delete[] _matriz[i];
-                    delete[] _matriz;
-                }
-
+                    //Delete na matriz atual, caso ela nao seja nula
+                    if(_matriz != NULL){
+                        for(int i = 0; i < _height; i++)
+                            delete[] _matriz[i];
+                        delete[] _matriz;
+                    }
                 //Dimensoes, geracao, hash e _aliveCells permanecem os mesmos
-                _height = otherInstance._height;
-                _width = otherInstance._width;
-                _generation = otherInstance._generation;
-                _aliveCells = otherInstance._aliveCells;
-                _hash = otherInstance._hash;
+                _height = rhs._height;
+                _width = rhs._width;
+                _generation = rhs._generation;
+                _aliveCells = rhs._aliveCells;
+                _hash = rhs._hash;
 
-                //Alocando espaco para nova matriz
+                 //Alocando espaco para nova matriz
                 _matriz = alocateMatrix(_height, _width);
 
                 //Copiando elementos da matriz passada para matriz atual
                 for(size_t i = 0; i < _height; i++){
-                    memcpy(_matriz[i], otherInstance._matriz[i], _width);
+                    memcpy(_matriz[i], rhs._matriz[i], _width);
                 }
-
-                //Invalidando instancia passada
-                //Desalocacao da matriz da instancia passada
-                for(int i = 0; i < otherInstance._height; i++)
-                    delete[] otherInstance._matriz[i];
-                delete[] otherInstance._matriz;
-
-                //Invalidando atributos da instancia passada
-                otherInstance._height = 0;
-                otherInstance._width = 0;
-                otherInstance._generation = 0;
-                otherInstance._aliveCells.clear();
-                otherInstance._hash = 0;
             }
             //retorno
             return *this;
         }
+
 
         /*-------------------------------------METODOS---------------------------------------*/
 
