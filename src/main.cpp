@@ -212,18 +212,21 @@ class Life
             if (this != &otherInstance){
                 *this = otherInstance;
 
-                //Invalidando instancia passada
-                //Desalocacao da matriz da instancia passada
-                for(int i = 0; i < otherInstance._height; i++)
-                    // delete[] otherInstance._matriz[i];
-                // delete[] otherInstance._matriz;
+                otherInstance.~Life();
 
-                //Invalidando atributos da instancia passada
-                otherInstance._height = 0;
-                otherInstance._width = 0;
-                otherInstance._generation = 0;
-                otherInstance._aliveCells.clear();
-                otherInstance._hash = 0;
+                // //Invalidando instancia passada
+                // //Desalocacao da matriz da instancia passada
+                // for(int i = 0; i < otherInstance._height; i++){
+                //     delete[] otherInstance._matriz[i];
+                // }
+                // // delete[] otherInstance._matriz;
+                //
+                // //Invalidando atributos da instancia passada
+                // otherInstance._height = 0;
+                // otherInstance._width = 0;
+                // otherInstance._generation = 0;
+                // otherInstance._aliveCells.clear();
+                // otherInstance._hash = 0;
             }
             //retorno
             return *this;
