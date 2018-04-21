@@ -393,6 +393,14 @@ int main(int argc, char *argv[])
     //recuperar nome do arquivo da linha de comando
     //instanciar classe usando nome do arquivo
     //Amanda implementa
+    std:: ifstream modification;
+    string file_name = argv[argc - 1];
+
+    if (argc > 1){
+        modification.open(file_name);
+    }
+
+    Life(file_name);
 
     //objeto que cria hash, dada uma string
     std::hash<std::string> Hasher;
