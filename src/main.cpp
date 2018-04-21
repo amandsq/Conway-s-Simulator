@@ -200,11 +200,14 @@ class Life
             std::cout << "Default constructor being used" << std::endl;
         }
 
-        //TODO move constructor
+        //move constructor
+        Life(Life &&otherInstance):_height(0), _width(0), _generation(0), _hash(0), _matriz(NULL){
+            *this = std::move(otherInstance);
+        }
 
         //Destrutor
         ~Life(){
-            for(int i = 0; i < this.altura; i++)
+            for(int i = 0; i < _height; i++)
                 delete[] _matriz[i];
             delete[] _matriz;
         }
@@ -233,11 +236,53 @@ class Life
             //TODO Amanda e Paulo implementam
         }
 
-        //TODO move assignment
+        //Atribuicao move
+        Life& operator=(Life&& otherInstance){
+            //so realizar operacoes de copia e desalocacao caso sejam objetos diferentes
+            if (this != &other){
+
+                //Delete na matriz atual, caso ela nao seja nula
+                if(_matriz != NULL){
+                    for(int i = 0; i < _height; i++)
+                        delete[] _matriz[i];
+                    delete[] _matriz;
+                }
+
+                //Dimensoes, geracao, hash e _aliveCells permanecem os mesmos
+                _height = otherInstance._height;
+                _width = otherInstance._width;
+                _generation = otherInstance._generation;
+                _aliveCells = otherInstance._aliveCells;
+                _hash = otherInstance._hash;
+
+                //Alocando espaco para nova matriz
+                _matriz = alocateMatrix(_height, _width);
+
+                //Copiando elementos da matriz passada para matriz atual
+                for(size_t i = 0; i < _height; i++){
+                    memcpy(_matriz[i], otherInstance.matriz[i], _width);
+                }
+
+                //Invalidando instancia passada
+                //Desalocacao da matriz da instancia passada
+                for(int i = 0; i < otherInstance._height; i++)
+                    delete[] otherInstance._matriz[i];
+                delete[] otherInstance._matriz;
+
+                //Invalidando atributos da instancia passada
+                otherInstance._height = 0;
+                otherInstance._width = 0;
+                otherInstance._generation = 0;
+                otherInstance._aliveCells.clear();
+                otherInstance._hash = 0;
+            }
+            //retorno
+            return *this;
+        }
 
         /*-------------------------------------METODOS---------------------------------------*/
 
-        //recebe um std::hash que cria um hash para uma string
+        //Recebe um std::hash que cria um hash para uma string
         //e entao atribui o hash obtido para o hash da configuracao atual
         void createHash(std::hash<std::string> &Hasher){
             _hash = Hasher(generateString(_aliveCells));
@@ -332,17 +377,20 @@ friend ostream& operator<<(ostream& os, const Life& life)
 
 int main(int argc, char *argv[])
 {
+    std::string inputFile;
+    //TODO
     //recuperar nome do arquivo da linha de comando
     //instanciar classe usando nome do arquivo
     //Amanda implementa
 
     //objeto que cria hash, dada uma string
     std::hash<std::string> Hasher;
+
     //dicionario que armazerana hash e a geracao que esse hash aconteceu
     std::map<size_t, size_t> HashDict;
 
     //inicializando a geracao atual com o arquivo de input
-    Life currentGeneration(#nome_do_arquivo);
+    Life currentGeneration(inputFile);
 
     //laco principal de execucao do programa
     while(true){
@@ -361,6 +409,7 @@ int main(int argc, char *argv[])
 
         //checando se a geracao atual é estavel = chegando se esse hash ja aconteceu no dicionario
         if(currentGeneration.isStable(HashDict)){
+            //TODO
             //Amanda implementa
 
 
@@ -368,9 +417,9 @@ int main(int argc, char *argv[])
         }
 
         //criando a nova geracao, a partir da geracao atual
-        Life nextGeneration(currentGeneration, true);
+        Life nextGeneration(currentGeneration);
 
         //atualizando a geracao atual, e invalidando e desalocando a varaivel nextGeneration
-        currentGeneration = nextGeneration;
+        currentGeneration = std::move(nextGeneration);
     }
 }
