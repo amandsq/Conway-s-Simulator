@@ -6,11 +6,12 @@
 #include <set> //set
 #include <vector> //vector
 #include <utility> //pair
+#include <chrono>
+#include <thread>
 
 
 class Life
 {
-    private:
         using gen_t = size_t; //criando alias para size_t (gen_t)
         using hash_t = size_t; //criando alias para size_t (hash_t)
 
@@ -199,8 +200,9 @@ class Life
 
         //Destrutor
         ~Life(){
-            for(int i = 0; i < _height; i++)
+            for(int i = 0; i < _height; i++){
                 delete[] _matriz[i];
+            }
             delete[] _matriz;
         }
 
@@ -212,21 +214,19 @@ class Life
             if (this != &otherInstance){
                 *this = otherInstance;
 
-                otherInstance.~Life();
+                //Invalidando instancia passada
+                //Desalocacao da matriz da instancia passada
+                for(int i = 0; i < otherInstance._height; i++){
+                    if(otherInstance._matriz[i] != NULL) delete[] otherInstance._matriz[i];
+                }
+                if(otherInstance._matriz != NULL) delete[] otherInstance._matriz;
 
-                // //Invalidando instancia passada
-                // //Desalocacao da matriz da instancia passada
-                // for(int i = 0; i < otherInstance._height; i++){
-                //     delete[] otherInstance._matriz[i];
-                // }
-                // // delete[] otherInstance._matriz;
-                //
-                // //Invalidando atributos da instancia passada
-                // otherInstance._height = 0;
-                // otherInstance._width = 0;
-                // otherInstance._generation = 0;
-                // otherInstance._aliveCells.clear();
-                // otherInstance._hash = 0;
+                //Invalidando atributos da instancia passada
+                otherInstance._height = 0;
+                otherInstance._width = 0;
+                otherInstance._generation = 0;
+                otherInstance._aliveCells.clear();
+                otherInstance._hash = 0;
             }
             //retorno
             return *this;
@@ -353,6 +353,8 @@ class Life
         //funcao para retornar geracao atual
         gen_t getGeneration() const{return _generation;}
 
+        //funcao para retornar hash atual
+        hash_t getHash() const{return _hash;}
 
 };
 
@@ -361,6 +363,7 @@ std::ostream& operator<< (std::ostream& os, const Life& life)
 {
     //impressao da geracao atual
     os << "Current generation: " << life.getGeneration() << '\n';
+    os << "Current hash: " << life.getHash() << '\n';
 
     size_t height = life.getHeight();
     size_t width = life.getWidth();
@@ -393,6 +396,9 @@ int main(int argc, char *argv[])
 
     //laco principal de execucao do programa
     while(true){
+        //cirando um hash para a geracao atual
+        currentGeneration.createHash(Hasher);
+
         //impressao da geracao e da matriz atual
         std::cout << currentGeneration << std::endl;
 
@@ -403,21 +409,23 @@ int main(int argc, char *argv[])
             return 0;
         }
 
-        //cirando um hash para a geracao atual
-        currentGeneration.createHash(Hasher);
 
         //checando se a geracao atual é estavel = chegando se esse hash ja aconteceu no dicionario
         if(currentGeneration.isStable(HashDict)){
-            std::cout << "The generation is stable... \n";
-            std::cout << "Number of generations created: " << currentGeneration.getGeneration() << '\n';
+            //TODO Amanda implementa
+
+
             return 0;
         }
+        //adicionando o hash atual para o dicionario
+        currentGeneration.addToDict(HashDict);
 
         //criando a nova geracao, a partir da geracao atual
         Life nextGeneration(currentGeneration);
 
         //atualizando a geracao atual, e invalidando e desalocando a varaivel nextGeneration
-        currentGeneration = std::move(nextGeneration);
-        // system("clear");
+        currentGeneration = nextGeneration;
+        system("clear");
+        std::this_thread::sleep_for (std::chrono::seconds(1));
     }
 }
