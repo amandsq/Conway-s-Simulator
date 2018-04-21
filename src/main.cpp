@@ -389,18 +389,9 @@ std::ostream& operator<< (std::ostream& os, const Life& life)
 int main(int argc, char *argv[])
 {
     std::string inputFile;
-    //TODO
-    //recuperar nome do arquivo da linha de comando
-    //instanciar classe usando nome do arquivo
-    //Amanda implementa
-    std:: ifstream modification;
-    string file_name = argv[argc - 1];
-
-    if (argc > 1){
-        modification.open(file_name);
-    }
-
-    Life(file_name);
+    if(argc == 2){
+        inputFile = argv[argc - 1];
+    }else return 1;
 
     //objeto que cria hash, dada uma string
     std::hash<std::string> Hasher;
@@ -438,6 +429,6 @@ int main(int argc, char *argv[])
         Life nextGeneration(currentGeneration);
 
         //atualizando a geracao atual, e invalidando e desalocando a varaivel nextGeneration
-        currentGeneration = std::move(nextGeneration);
+        currentGeneration = nextGeneration;
     }
 }
