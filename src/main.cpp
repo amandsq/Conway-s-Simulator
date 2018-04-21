@@ -1,4 +1,11 @@
-#include <iostream>
+#include <iostream> //cout
+#include <fstream> //filestream
+#include <sstream> //stringstream
+#include <cstring> //memcpy
+#include <map> //map
+#include <set> //set
+#include <vector> //vector
+#include <utility> //pair
 
 
 class Life
@@ -9,12 +16,12 @@ class Life
 
         size_t _height, _width; //as dimensões da matriz
         bool **_matriz; // matriz que será representada por ponteiro de ponteiro de booleando
-        vector<std::pair<int,int>> _aliveCells; //vetor que guarda as coordenadas (no vetor "grande") das celulas vivas
+        std::vector<std::pair<int,int>> _aliveCells; //vetor que guarda as coordenadas (no vetor "grande") das celulas vivas
         hash_t _hash; //hash do vetor _aliveCells
         gen_t _generation; // variavel que indica a geração atual
 
         //criar uma string com os valores que tem no vetor que guarda as celulas vivas
-        std::string generateString(const vector<std::pair<int,int>> &vetor) {
+        std::string generateString(const std::vector<std::pair<int,int>> &vetor) const{
             std::stringstream ss;
 
             // for para colocar os valores do vetor em um stringstream
@@ -37,7 +44,7 @@ class Life
         }
 
         //Funcao que conta as celulas vivas
-        size_t countAliveCells (size_t line, size_t column){
+        size_t countAliveCells (size_t line, size_t column) const{
 
             size_t count(0);
             int analizedLine, analizedColumn;
@@ -141,8 +148,7 @@ class Life
                 //a fim de checar se elas continuarao vivas
                 for(int i = 0; i < otherInstance._aliveCells.size(); i++){
                     //Contando quantas celulas vivas ao redor
-                    size_t counter = otherInstance.countAliveCells
-                            (otherInstance._aliveCells[i].first, otherInstance._aliveCells[i].second);
+                    size_t counter = otherInstance.countAliveCells(otherInstance._aliveCells[i].first, otherInstance._aliveCells[i].second);
 
                     //Caso sejam 2 ou 3 celulas, ela permanece viva
                     if(counter > 1 && counter < 4){
@@ -156,7 +162,7 @@ class Life
                 //Analisando o vetor (da instancia passada) das celulas mortas vizinhas as celulas vivas
 
                 //Declarando vetor temporario para armazenar as coordenadas na instancia passada
-                vector<pair<int,int>> _deadNBCells;
+                std::vector<std::pair<int,int>> _deadNBCells;
                 //Recuperando as coordenadas
                 otherInstance.getDeadNBCells(_deadNBCells);
 
@@ -190,7 +196,7 @@ class Life
 
                 //Copiando elementos da matriz passada para matriz atual
                 for(size_t i = 0; i < _height; i++){
-                    memcpy(_matriz[i], otherInstance.matriz[i], _width);
+                    memcpy(_matriz[i], otherInstance._matriz[i], _width);
                 }
             }
         }
@@ -239,7 +245,7 @@ class Life
         //Atribuicao move
         Life& operator=(Life&& otherInstance){
             //so realizar operacoes de copia e desalocacao caso sejam objetos diferentes
-            if (this != &other){
+            if (this != &otherInstance){
 
                 //Delete na matriz atual, caso ela nao seja nula
                 if(_matriz != NULL){
@@ -260,7 +266,7 @@ class Life
 
                 //Copiando elementos da matriz passada para matriz atual
                 for(size_t i = 0; i < _height; i++){
-                    memcpy(_matriz[i], otherInstance.matriz[i], _width);
+                    memcpy(_matriz[i], otherInstance._matriz[i], _width);
                 }
 
                 //Invalidando instancia passada
@@ -294,9 +300,9 @@ class Life
         }
 
         //metodo para preencher vector com celulas mortas vizinhas a celulas vivas, sem duplicatas
-        void getDeadNBCells(vector<pair<int,int>> &v){
+        void getDeadNBCells(std::vector<std::pair<int,int>> &v) const{
             //Declaracao de set temporario, para evitar duplicatas
-            std::set<pair<int,int>> tempSet;
+            std::set<std::pair<int,int>> tempSet;
 
             //Variaveis temporarias para auxilio
             int analizedLine, analizedColumn;
@@ -321,11 +327,11 @@ class Life
                             continue;
 
                         //Caso ja tenhamos adicionado essa celula ao vetor, nao vamos fazer isso de novo
-                        if(tempSet.count(make_pair(analizedLine, analizedColumn)) == 0){
-                             v.push_back(make_pair(analizedLine, analizedColumn));
+                        if(tempSet.count(std::make_pair(analizedLine, analizedColumn)) == 0){
+                             v.push_back(std::make_pair(analizedLine, analizedColumn));
 
                              //Inserindo coordenada ao conjunto, para controle de duplicatas
-                             tempSet.insert(make_pair(analizedLine, analizedColumn));
+                             tempSet.insert(std::make_pair(analizedLine, analizedColumn));
                         }
                     }
                 }
@@ -351,16 +357,16 @@ class Life
         gen_t getHashFirstGen(std::map<hash_t, gen_t> &HashDict) const{return HashDict[_hash];}
 
         //funcao para retornar geracao atual
-        gen_t getGeneration() const{return _generation};
+        gen_t getGeneration() const{return _generation;}
 
 
 };
 
 //sobrecarga de operador << para impressao em stream
-friend ostream& operator<<(ostream& os, const Life& life)
+std::ostream& operator<< (std::ostream& os, const Life& life)
 {
     //impressao da geracao atual
-    os << "Current generation: " << life.getCurrGeneration() << '\n';
+    os << "Current generation: " << life.getGeneration() << '\n';
 
     size_t height = life.getHeight();
     size_t width = life.getWidth();
@@ -368,9 +374,9 @@ friend ostream& operator<<(ostream& os, const Life& life)
     //impressao da matriz
     for(size_t i = 0; i < height; i++){
         for(size_t j = 0; j < width; j++){
-            if(life.isAlive(i, j)) so << '* ';
-            else so << '. ';
-        }so << '\n';
+            if(life.isAlive(i, j)) os << "* ";
+            else os << ". ";
+        }os << '\n';
     }
     return os;
 }
