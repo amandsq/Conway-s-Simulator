@@ -13,7 +13,6 @@ class Life
         hash_t _hash; //hash do vetor _aliveCells
         gen_t _generation; // variavel que indica a geração atual
 
-
         //criar uma string com os valores que tem no vetor que guarda as celulas vivas
         std::string generateString(const vector<std::pair<int,int>> &vetor) {
             std::stringstream ss;
@@ -22,10 +21,11 @@ class Life
             for(int i = 0; i < vetor.size(); i++){
                 ss << vetor[i].first << " " << vetor[i].second << " ";
             }
-            return ss.str(); //transforma um fluxo em uma string e retorna essa string
+            //transforma um fluxo em uma string e retorna essa string
+            return ss.str();
         }
 
-        //Funcao local para alocacao de matriz
+        //Funcao local para alocacao (e inicializacao padrao) de matriz
         bool **alocateMatrix(size_t _height, size_t _width){
             bool **ans = new bool*[_height];
 
@@ -78,6 +78,7 @@ class Life
     public:
         /*-------------------------------CONSTRUTORES-E-DESTRUTOR----------------------------*/
 
+        //construtor recebendo nome de arquivo como parametro
         Life(std::string &inputFile){
             //Declaracao de fluxos e variaveis
             std::ifstream ifs(inputFile.c_str());
@@ -194,11 +195,12 @@ class Life
             }
         }
 
+        //construtor padrao
         Life( void ):_height(0), _width(0), _generation(0), _hash(0), _matriz(NULL){
             std::cout << "Default constructor being used" << std::endl;
         }
-        //move constructor
-        //move assignment
+
+        //TODO move constructor
 
         //Destrutor
         ~Life(){
@@ -228,8 +230,10 @@ class Life
         aqui, rhs será geracao e o objeto atual seria copia_dessa_geracao
         */
         Life & operator=( const Life& rhs ){
-            //Amanda e Paulo implementam
+            //TODO Amanda e Paulo implementam
         }
+
+        //TODO move assignment
 
         /*-------------------------------------METODOS---------------------------------------*/
 
@@ -244,21 +248,7 @@ class Life
             HashDict[_hash] = _generation;
         }
 
-        /*-------------------------------------FUNCOES---------------------------------------*/
-
-        bool isAlive(size_t y, size_t x) const{return _matriz[y][x];}
-
-        //funcao booleana que retorna verdadeiro se nao existirem celulas vivias, falso, caso contrario
-        bool isExtinct() const{return (_aliveCells.size() == 0);}
-
-        //função booleana que retorna verdadeiro se alguma geração ja aconteceu, e caso contrario, retorna falso
-        bool isStable(std::map<hash_t, gen_t> &HashDict) const{return (HashDict.count(_hash) > 0);}
-
-        size_t getHeight() const{return _height;}
-        size_t getWidth() const{return _width;}
-        gen_t getCycleHead(std::map<hash_t, gen_t> &HashDict) const{return HashDict[_hash];}
-        gen_t getGeneration() const{return _generation};
-
+        //metodo para preencher vector com celulas mortas vizinhas a celulas vivas, sem duplicatas
         void getDeadNBCells(vector<pair<int,int>> &v){
             //Declaracao de set temporario, para evitar duplicatas
             std::set<pair<int,int>> tempSet;
@@ -296,6 +286,28 @@ class Life
                 }
             }
         }
+        /*-------------------------------------FUNCOES---------------------------------------*/
+
+        bool isAlive(size_t y, size_t x) const{return _matriz[y][x];}
+
+        //funcao booleana que retorna verdadeiro se nao existirem celulas vivias, falso, caso contrario
+        bool isExtinct() const{return (_aliveCells.size() == 0);}
+
+        //função booleana que retorna verdadeiro se alguma geração ja aconteceu, e caso contrario, retorna falso
+        bool isStable(std::map<hash_t, gen_t> &HashDict) const{return (HashDict.count(_hash) > 0);}
+
+        //funcao para obter altura da matriz
+        size_t getHeight() const{return _height;}
+
+        //funcao para obter largura da matriz
+        size_t getWidth() const{return _width;}
+
+        //funcao para retornar primeira geracao em que aconteceu certo hash
+        gen_t getHashFirstGen(std::map<hash_t, gen_t> &HashDict) const{return HashDict[_hash];}
+
+        //funcao para retornar geracao atual
+        gen_t getGeneration() const{return _generation};
+
 
 };
 
