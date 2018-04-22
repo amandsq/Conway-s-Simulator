@@ -17,6 +17,9 @@
    \author Amanda Albuquerque e Paulo Medeiros.
 */
 
+/*! \class Life
+    \brief 
+*/
 class Life
 {
         using gen_t = size_t; //criando alias para size_t (gen_t)

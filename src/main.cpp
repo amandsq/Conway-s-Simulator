@@ -25,6 +25,12 @@ int main(int argc, char *argv[])
     //inicializando a geracao atual com o arquivo de input
     Life currentGeneration(inputFile);
 
+    std::cout << "In order to stop the game, press [Ctrl + C]\n";
+    std::cout << "Starting in\n3...\n";std::this_thread::sleep_for (std::chrono::seconds(1));
+    std::cout << "2...\n";std::this_thread::sleep_for (std::chrono::seconds(1));
+    std::cout << "1...\n";std::this_thread::sleep_for (std::chrono::seconds(1));
+
+
     //laco principal de execucao do programa
     while(true){
         //cirando um hash para a geracao atual
