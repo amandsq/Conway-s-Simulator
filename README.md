@@ -9,7 +9,7 @@ Paulo Medeiros
 [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)  is a zero-player game, this means that it's evolution depends uniquely on the input configuration.
 This project is from the **Linguagem de Programação** course by **Selan R. dos Santos**, **UFRN**.
 ## Compiling
-Once you've [downloaded]https://github.com/pauloamed/Conway-s-Simulator/archive/master.zip(), you will need the following to compile
+Once you've [downloaded](https://github.com/pauloamed/Conway-s-Simulator/archive/master.zip), you will need the following to compile
 ```
 g++
 ```
