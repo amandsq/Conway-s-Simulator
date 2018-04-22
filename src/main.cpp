@@ -38,14 +38,8 @@ int main(int argc, char *argv[])
 
         //checando se a geracao atual é estavel = chegando se esse hash ja aconteceu no dicionario
         if(currentGeneration.isStable(HashDict)){
-<<<<<<< HEAD
             std::cout << "This generation is stable... \n";
             std::cout << "Number of generations created: " << currentGeneration.getGeneration() << '\n';
-=======
-            //TODO Amanda implementa
-
-
->>>>>>> parent of 9fc5352... cout isStable
             return 0;
         }
         //adicionando o hash atual para o dicionario
