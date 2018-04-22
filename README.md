@@ -1,5 +1,5 @@
 # Conway's Game of Life Simulator
-##### Authors
+#### Authors
 ```
 Amanda Albuquerque
 Paulo Medeiros
