@@ -5,7 +5,7 @@ std::string Life::generateString(std::vector<std::pair<int,int>> &vetor) const{
     std::stringstream ss;
 
     // for para colocar os valores do vetor em um stringstream
-    for(int i = 0; i < vetor.size(); i++){
+    for(size_t i = 0; i < vetor.size(); i++){
         ss << vetor[i].first << " " << vetor[i].second << " ";
     }
     //transforma um fluxo em uma string e retorna essa string
@@ -15,9 +15,9 @@ std::string Life::generateString(std::vector<std::pair<int,int>> &vetor) const{
 bool **Life::alocateMatrix(size_t _height, size_t _width){
     bool **ans = new bool*[_height];
 
-    for(int i = 0; i < _height; i++){
+    for(size_t i = 0; i < _height; i++){
         ans[i] = new bool[_width];
-        for(int j = 0; j < _width; j++) ans[i][j] = false;
+        for(size_t j = 0; j < _width; j++) ans[i][j] = false;
     }
     return ans;
 }
@@ -32,7 +32,7 @@ size_t Life::countAliveCells (int line, int column) const{
         analizedLine = line + i;
         if (analizedLine < 0) {
             analizedLine = _height - 1;
-        } else if (analizedLine >= _height) {
+        } else if (analizedLine >= (int) _height) {
             analizedLine = 0;
         }
         for (int j = -1; j < 2; j++) {
@@ -41,7 +41,7 @@ size_t Life::countAliveCells (int line, int column) const{
             analizedColumn = column + j;
             if (analizedColumn < 0) {
                 analizedColumn = _width - 1;
-            } else if (analizedColumn >= _width) {
+            } else if (analizedColumn >= (int) _width) {
                 analizedColumn = 0;
             }
 
@@ -61,8 +61,14 @@ size_t Life::countAliveCells (int line, int column) const{
 }
 
 Life::Life(std::string &inputFile){
+    inputFile = "res/" + inputFile;
     //Declaracao de fluxos e variaveis
-    std::ifstream ifs(inputFile.c_str());
+    std::ifstream ifs;
+    ifs.open(inputFile.c_str());
+    if(!ifs){
+        std::cerr << "Bad input file\n";
+        exit(1);
+    }
     std::string line;
     std::stringstream ss;
     char alive_char, temp_char;
@@ -82,10 +88,10 @@ Life::Life(std::string &inputFile){
     ss.clear();
 
     //Leitura da matriz de celulas
-    for(int i = 0; i < _height; i++){
+    for(size_t i = 0; i < _height; i++){
         std::getline(ifs, line);
         ss << line;
-        for(int j = 0; j < _width; j++){
+        for(size_t j = 0; j < _width; j++){
             ss >> temp_char;
 
             //Caso o caracter em questao seja verdadeiro, adicionar sua coordenada a _aliveCells
@@ -118,7 +124,7 @@ Life::Life(const Life &otherInstance, bool newGen){
 
         //Analisando vetor de celulas vivas na instancia passada
         //a fim de checar se elas continuarao vivas
-        for(int i = 0; i < otherInstance._aliveCells.size(); i++){
+        for(int i = 0; i < (int) otherInstance._aliveCells.size(); i++){
             //Contando quantas celulas vivas ao redor
             size_t counter = otherInstance.countAliveCells(otherInstance._aliveCells[i].first, otherInstance._aliveCells[i].second);
 
@@ -138,7 +144,7 @@ Life::Life(const Life &otherInstance, bool newGen){
         //Recuperando as coordenadas
         otherInstance.getDeadNBCells(_deadNBCells);
 
-        for(int i = 0; i < _deadNBCells.size(); i++){
+        for(int i = 0; i < (int) _deadNBCells.size(); i++){
             //Contando quantas celulas vivas ao redor
             size_t counter = otherInstance.countAliveCells
                     (_deadNBCells[i].first, _deadNBCells[i].second);
@@ -158,14 +164,14 @@ Life::Life(const Life &otherInstance, bool newGen){
     }
 }
 
-Life::Life( void ):_height(0), _width(0), _generation(0), _hash(0), _matriz(NULL){}
+Life::Life( void ):_height(0), _width(0), _matriz(NULL), _hash(0),_generation(0){}
 
-Life::Life(Life &&otherInstance):_height(0), _width(0), _generation(0), _hash(0), _matriz(NULL){
+Life::Life(Life &&otherInstance):_height(0), _width(0), _matriz(NULL), _hash(0),_generation(0){
     *this = std::move(otherInstance);
 }
 
 Life::~Life(){
-    for(int i = 0; i < _height; i++){
+    for(int i = 0; i < (int) _height; i++){
         delete[] _matriz[i];
     }
     delete[] _matriz;
@@ -178,7 +184,7 @@ Life& Life::operator=(Life&& otherInstance){
 
         //Invalidando instancia passada
         //Desalocacao da matriz da instancia passada
-        for(int i = 0; i < otherInstance._height; i++){
+        for(int i = 0; i < (int) otherInstance._height; i++){
             if(otherInstance._matriz[i] != NULL) delete[] otherInstance._matriz[i];
         }
         if(otherInstance._matriz != NULL) delete[] otherInstance._matriz;
@@ -199,7 +205,7 @@ Life& Life::operator=( const Life& rhs ){
     if (this != &rhs){
         //Delete na matriz atual, caso ela nao seja nula
         if(_matriz != NULL){
-            for(int i = 0; i < _height; i++)
+            for(int i = 0; i < (int) _height; i++)
                 delete[] _matriz[i];
             delete[] _matriz;
         }
@@ -236,23 +242,23 @@ void Life::getDeadNBCells(std::vector<std::pair<int,int>> &v) const{
 
     //Variaveis temporarias para auxilio
     int analizedLine, analizedColumn;
-    for(int k = 0; k < _aliveCells.size(); k++){
+    for(int k = 0; k < (int) _aliveCells.size(); k++){
         for(int i = -1; i <= 1; i++){
 
             //Propriedades wrapped
             analizedLine = _aliveCells[k].first + i;
             if (analizedLine < 0){analizedLine = _height - 1;}
-            else if(analizedLine >= _height){analizedLine = 0;}
+            else if(analizedLine >= (int) _height){analizedLine = 0;}
 
             for(int j = -1; j <= 1; j++){
 
                 //Propriedades wrapped
                 analizedColumn = _aliveCells[k].second + j;
                 if(analizedColumn < 0){analizedColumn = _width - 1;}
-                else if(analizedColumn >= _width){analizedColumn = 0;}
+                else if(analizedColumn >= (int) _width){analizedColumn = 0;}
 
                 //A celula em questao eh viva, e nao deve ser considerada
-                if(_aliveCells[k].first == analizedLine && _aliveCells[k].second == analizedColumn ||
+                if((_aliveCells[k].first == analizedLine && _aliveCells[k].second == analizedColumn) ||
                         _matriz[analizedLine][analizedColumn])
                     continue;
 
@@ -296,15 +302,13 @@ std::ostream& operator<< (std::ostream& os, const Life& life){
     for(int i = -1; i <= height; i++){
         for(int j = -1; j <= width; j++){
             if(i == -1 || i == height || j == -1 || j == width){
-                os << "\033[1;44m  \033[0m";
-                if(j == 0) os << "\033[1;44m \033[0m";
+                os << "+ ";
                 continue;
             }
-            if(j == 0) os << "\033[1;47m \033[0m";
             if(life.isAlive(i, j))
-                os << "\033[1;47;31m๏ \033[0m";
+                os << "๏ ";
             else
-                os << "\033[1;47;37m๏ \033[0m";
+                os << "  ";
         }os << "\n\t";
     }os << '\n';
     return os;

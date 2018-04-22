@@ -2,46 +2,37 @@
 srcdir = ./src
 objdir = ./obj
 incdir = ./include
-outdir = ./out
 
 #Vars
-objects = $(objdir)/main.o $(objdir)/util.o $(objdir)/algorithms.o $(objdir)/algmeasure.o
+objects = $(objdir)/main.o $(objdir)/life.o
 
 CPPFLAGS = -Wall -Iinclude/ -std=c++11
 
-.PHONY: clean cleanobj cleanout clean_all
-.PHONY: analise
+.PHONY: clean clean_exe clean_obj
+.PHONY: simulator
 
-analise: $(objects)
-	g++ -o analise $(objects) $(FLAGS)
-$(objdir)/main.o: $(incdir)/algorithms.h $(incdir)/util.h $(incdir)/algmeasure.h $(srcdir)/main.cpp
+simulator: $(objects)
+	mkdir -p res
+	g++ -o simulator $(objects) $(FLAGS)
+	@echo "\n\n\nTo execute, type:"
+	@echo "./simulator input_file\n"
+	@echo "Where input_file is the name of your input file saved in /res"
+$(objdir)/main.o: $(incdir)/life.hpp $(srcdir)/main.cpp
 	mkdir -p obj
-	mkdir -p out
 	g++ $(CPPFLAGS) -c $(srcdir)/main.cpp -o $(objdir)/main.o
-$(objdir)/util.o: $(srcdir)/util.cpp
+$(objdir)/life.o: $(srcdir)/life.cpp
 	mkdir -p obj
-	g++ $(CPPFLAGS) -c $(srcdir)/util.cpp -o $(objdir)/util.o
-$(objdir)/algorithms.o: $(incdir)/util.h $(srcdir)/algorithms.cpp
-	mkdir -p obj
-	g++ $(CPPFLAGS) -c $(srcdir)/algorithms.cpp -o $(objdir)/algorithms.o
-$(objdir)/algmeasure.o: $(incdir)/util.h $(incdir)/algorithms.h $(srcdir)/algmeasure.cpp
-	mkdir -p obj
-	g++ $(CPPFLAGS) -c $(srcdir)/algmeasure.cpp -o $(objdir)/algmeasure.o
+	g++ $(CPPFLAGS) -c $(srcdir)/life.cpp -o $(objdir)/life.o
 
 # Limpa o executável e o diretorio de arquivos objeto
-clean_all: clean cleanobj cleanout
+clean: clean_exe clean_obj
 
 #Limpa o executável
-clean:
-	@rm ./analise -f
+clean_exe:
+	@rm ./simulator -f
 	@echo "Executable file was deleted"
 
 # Limpa diretorio de arquivos objeto
-cleanobj:
+clean_obj:
 	@rm -rf $(objdir)
 	@echo "Object files were deleted"
-
-# Limpa diretorio de saida
-cleanout:
-	@rm -rf $(outdir)
-	@echo "Output files were deleted"
