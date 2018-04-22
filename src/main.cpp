@@ -420,9 +420,8 @@ int main(int argc, char *argv[])
 
         //checando se a geracao atual é estavel = chegando se esse hash ja aconteceu no dicionario
         if(currentGeneration.isStable(HashDict)){
-            //TODO Amanda implementa
-
-
+            std::cout << "The generation is stable... \n";
+            std::cout << "Number of generations created: " << currentGeneration.getGeneration() << '\n';
             return 0;
         }
         //adicionando o hash atual para o dicionario
