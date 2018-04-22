@@ -1,6 +1,7 @@
 #ifndef LIFE_HEADER
 #define LIFE_HEADER
 
+#include <iostream> //cerr,cout
 #include <fstream> //filestream
 #include <sstream> //stringstream
 #include <cstring> //memcpy

@@ -1,6 +1,5 @@
 #include "life.hpp" //life class
 
-#include <iostream> //cout, osstream
 #include <chrono> //milliseconds
 #include <thread> //sleep_for
 
