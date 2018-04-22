@@ -363,18 +363,24 @@ std::ostream& operator<< (std::ostream& os, const Life& life)
 {
     //impressao da geracao atual
     os << "Current generation: " << life.getGeneration() << '\n';
-    os << "Current hash: " << life.getHash() << '\n';
+    os << "Current hash: " << life.getHash() << "\n\n\t";
 
-    size_t height = life.getHeight();
-    size_t width = life.getWidth();
+    int height = life.getHeight();
+    int width = life.getWidth();
 
     //impressao da matriz
-    for(size_t i = 0; i < height; i++){
-        for(size_t j = 0; j < width; j++){
-            if(life.isAlive(i, j)) os << "* ";
-            else os << ". ";
-        }os << '\n';
-    }
+    for(int i = -1; i <= height; i++){
+        for(int j = -1; j <= width; j++){
+            if(i == -1 || i == height || j == -1 || j == width){
+                os << "\033[1;44m \033[0m";
+                continue;
+            }
+            if(life.isAlive(i, j))
+                os << "\033[1;32;42m๏\033[0m";
+            else
+                os << "\033[1;47m \033[0m";
+        }os << "\n\t";
+    }os << '\n';
     return os;
 }
 
@@ -394,6 +400,8 @@ int main(int argc, char *argv[])
     //inicializando a geracao atual com o arquivo de input
     Life currentGeneration(inputFile);
 
+    //clear screen
+    std::cout << "\033c";
     //laco principal de execucao do programa
     while(true){
         //cirando um hash para a geracao atual
@@ -425,7 +433,11 @@ int main(int argc, char *argv[])
 
         //atualizando a geracao atual, e invalidando e desalocando a varaivel nextGeneration
         currentGeneration = nextGeneration;
-        system("clear");
-        std::this_thread::sleep_for (std::chrono::seconds(1));
+
+        //clear screen
+        std::cout << "\033c";
+
+        //sleep for a while
+        std::this_thread::sleep_for (std::chrono::milliseconds(333));
     }
 }
