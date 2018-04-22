@@ -378,7 +378,7 @@ std::ostream& operator<< (std::ostream& os, const Life& life)
             if(life.isAlive(i, j))
                 os << "\033[1;32;42m๏\033[0m";
             else
-                os << "\033[1;47m \033[0m";
+                os << "\033[1;47m๏\033[0m";
         }os << "\n\t";
     }os << '\n';
     return os;
@@ -400,8 +400,6 @@ int main(int argc, char *argv[])
     //inicializando a geracao atual com o arquivo de input
     Life currentGeneration(inputFile);
 
-    //clear screen
-    std::cout << "\033c";
     //laco principal de execucao do programa
     while(true){
         //cirando um hash para a geracao atual
@@ -432,9 +430,6 @@ int main(int argc, char *argv[])
 
         //atualizando a geracao atual, e invalidando e desalocando a varaivel nextGeneration
         currentGeneration = nextGeneration;
-
-        //clear screen
-        std::cout << "\033c";
 
         //sleep for a while
         std::this_thread::sleep_for (std::chrono::milliseconds(333));
