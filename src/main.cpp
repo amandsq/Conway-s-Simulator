@@ -8,6 +8,7 @@
 #include <utility> //pair
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
 
 class Life
@@ -22,7 +23,8 @@ class Life
         gen_t _generation; // variavel que indica a geração atual
 
         //criar uma string com os valores que tem no vetor que guarda as celulas vivas
-        std::string generateString(const std::vector<std::pair<int,int>> &vetor) const{
+        std::string generateString(std::vector<std::pair<int,int>> &vetor) const{
+            sort(vetor.begin(), vetor.end());
             std::stringstream ss;
 
             // for para colocar os valores do vetor em um stringstream
@@ -45,7 +47,7 @@ class Life
         }
 
         //Funcao que conta as celulas vivas
-        size_t countAliveCells (size_t line, size_t column) const{
+        size_t countAliveCells (int line, int column) const{
 
             size_t count(0);
             int analizedLine, analizedColumn;
@@ -69,7 +71,7 @@ class Life
                     }
 
                     //Nao queremos contar com a celula "do meio"
-                    if (analizedLine == line && analizedColumn == column) {
+                    if (analizedLine == line && analizedColumn == column){
                         continue;
                     }
 
@@ -133,7 +135,6 @@ class Life
         //copy constructor OU gerar com instancia antiga
         Life(const Life &otherInstance, bool newGen = true){
             if(newGen){//para gerar nova geracao
-                std::cout << "Next generation being created" << std::endl;
 
                 //Nova instancia tem matriz com mesmas dimensoes
                 _height = otherInstance._height;
@@ -172,8 +173,8 @@ class Life
                     size_t counter = otherInstance.countAliveCells
                             (_deadNBCells[i].first, _deadNBCells[i].second);
 
-                    //Caso seja 1 celula, essa celula vai se tornar viva
-                    if(counter == 1){
+                    //Caso sejam 3 celulas, essa celula vai se tornar viva
+                    if(counter == 3){
                         _matriz[_deadNBCells[i].first][_deadNBCells[i].second] = true;
 
                         //Adiciando celula viva ao vetor de celulas vivas
@@ -183,7 +184,6 @@ class Life
 
             }else{
                 //Criando copia da instancia passada
-                std::cout << "Copy constructor being used" << std::endl;
                 *this = otherInstance;
             }
         }
@@ -418,7 +418,7 @@ int main(int argc, char *argv[])
 
         //checando se a geracao atual é estavel = chegando se esse hash ja aconteceu no dicionario
         if(currentGeneration.isStable(HashDict)){
-            std::cout << "The generation is stable... \n";
+            std::cout << "This generation is stable... \n";
             std::cout << "Number of generations created: " << currentGeneration.getGeneration() << '\n';
             return 0;
         }
