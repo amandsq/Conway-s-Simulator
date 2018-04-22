@@ -3,6 +3,12 @@
 #include <chrono> //milliseconds
 #include <thread> //sleep_for
 
+/*!
+   \file main.cpp
+   \brief  Arquivo contendo a main do projeto
+   \author Amanda Albuquerque e Paulo Medeiros.
+*/
+
 int main(int argc, char *argv[])
 {
     std::string inputFile;

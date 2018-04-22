@@ -11,6 +11,12 @@
 #include <utility> //pair
 #include <algorithm> //sort
 
+/*!
+   \file life.hpp
+   \brief  Cabeçalho da classe Life e relacionados
+   \author Amanda Albuquerque e Paulo Medeiros.
+*/
+
 class Life
 {
         using gen_t = size_t; //criando alias para size_t (gen_t)
@@ -18,18 +24,18 @@ class Life
 
         size_t _height, _width; //as dimensões da matriz
         bool **_matriz; // matriz que será representada por ponteiro de ponteiro de booleando
-        std::vector<std::pair<int,int>> _aliveCells; //vetor que guarda as coordenadas (no vetor "grande") das celulas vivas
+        std::vector<std::pair<size_t,size_t>> _aliveCells; //vetor que guarda as coordenadas (no vetor "grande") das celulas vivas
         hash_t _hash; //hash do vetor _aliveCells
         gen_t _generation; // variavel que indica a geração atual
 
         //criar uma string com os valores que tem no vetor que guarda as celulas vivas
-        std::string generateString(std::vector<std::pair<int,int>> &vetor) const;
+        std::string generateString(std::vector<std::pair<size_t,size_t>> &vetor) const;
 
         //Funcao local para alocacao (e inicializacao padrao) de matriz
         bool **alocateMatrix(size_t _height, size_t _width);
 
         //Funcao que conta as celulas vivas
-        size_t countAliveCells (int line, int column) const;
+        size_t countAliveCells (size_t line, size_t column) const;
 
     public:
         /*-------------------------------CONSTRUTORES-E-DESTRUTOR----------------------------*/
@@ -67,7 +73,7 @@ class Life
         void addToDict(std::map<hash_t, gen_t> &HashDict) const;
 
         //metodo para preencher vector com celulas mortas vizinhas a celulas vivas, sem duplicatas
-        void getDeadNBCells(std::vector<std::pair<int,int>> &v) const;
+        void getDeadNBCells(std::vector<std::pair<size_t,size_t>> &v) const;
         /*-------------------------------------FUNCOES---------------------------------------*/
 
         //funcao booleana que retorna verdadeiro caso celula nas coordenadas passadas estiverem vivas

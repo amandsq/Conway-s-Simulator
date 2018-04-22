@@ -1,6 +1,18 @@
 #include "life.hpp"
 
-std::string Life::generateString(std::vector<std::pair<int,int>> &vetor) const{
+/*!
+   \file life.cpp
+   \brief  Coleção implementa de funções, métodos e sobrecargas relacionados a classe Life
+   \author Amanda Albuquerque e Paulo Medeiros.
+*/
+
+/*!
+\brief Função geradora de string
+Função para criar uma string com os valores que estao no vetor que guarda as coordenadas das celulas vivas.
+\param vector<std::pair<int,int>> &vetor :  vector de pares de valores inteiros indicando as coordenadas das celulas vivas.
+\return : retorna a string com as coordenadas
+*/
+std::string Life::generateString(std::vector<std::pair<size_t,size_t>> &vetor) const{
     sort(vetor.begin(), vetor.end());
     std::stringstream ss;
 
@@ -12,6 +24,13 @@ std::string Life::generateString(std::vector<std::pair<int,int>> &vetor) const{
     return ss.str();
 }
 
+/*!
+\brief Função Alocação de matriz
+Função local para alocação (e inicialização padrão) de matriz.
+\param size_t _height : variável que guarda tamanho da altura da matriz
+\param size_t _width : variável que guarda tamanho da largura da matriz
+\return : retorna endereço de um vetor de ponteiros para booleanos (indicando as linhas)
+*/
 bool **Life::alocateMatrix(size_t _height, size_t _width){
     bool **ans = new bool*[_height];
 
@@ -22,14 +41,21 @@ bool **Life::alocateMatrix(size_t _height, size_t _width){
     return ans;
 }
 
-size_t Life::countAliveCells (int line, int column) const{
+/*!
+\brief Contador de celulas vizinhas vivas
+Função que retorna a quantidade de celulas vizinhas (cada celula tem 8 vizinhas) que estao vivas
+\param size_t line : variavel contendo a coordenada y da celula a ser analisada
+\param size_t column : variavel contendo a coordenada x da celula a ser analisada
+\return : instancia da classe Life
+*/
+size_t Life::countAliveCells (size_t line, size_t column) const{
 
     size_t count(0);
     int analizedLine, analizedColumn;
     for (int i = -1; i < 2; i++) {
 
         //Propriedades wrapped
-        analizedLine = line + i;
+        analizedLine = (int) line + i;
         if (analizedLine < 0) {
             analizedLine = _height - 1;
         } else if (analizedLine >= (int) _height) {
@@ -38,7 +64,7 @@ size_t Life::countAliveCells (int line, int column) const{
         for (int j = -1; j < 2; j++) {
 
             //Propriedades wrapped
-            analizedColumn = column + j;
+            analizedColumn = (int) column + j;
             if (analizedColumn < 0) {
                 analizedColumn = _width - 1;
             } else if (analizedColumn >= (int) _width) {
@@ -46,7 +72,7 @@ size_t Life::countAliveCells (int line, int column) const{
             }
 
             //Nao queremos contar com a celula "do meio"
-            if (analizedLine == line && analizedColumn == column){
+            if (analizedLine == (int) line && analizedColumn == (int) column){
                 continue;
             }
 
@@ -60,6 +86,12 @@ size_t Life::countAliveCells (int line, int column) const{
     return count;
 }
 
+/*!
+\brief Construtor Life
+Função construtora que recebe o nome do arquivo input como parâmetro
+\param string &inputFile : variavel do tipo string que guarda o endereço\nome do arquivo
+\return : instancia da classe Life
+*/
 Life::Life(std::string &inputFile){
     inputFile = "res/" + inputFile;
     //Declaracao de fluxos e variaveis
@@ -109,6 +141,17 @@ Life::Life(std::string &inputFile){
     _generation = 1;
 }
 
+
+/*!
+\brief Construtor cópia ou Construtor de nova geração
+Construtor de cópia da instancia passada por parametro
+ou (chave newGen) construtor da proxima geracao da instancia passada
+
+\param const Life &otherInstance : instancia da classe Life, passada por referencia
+\param bool newGen : variavel que funcionará como flag para definir se vamos criar uma cópia,
+ou a próxima geração
+\return : instancia da classe Life, dependente da chave newGen
+*/
 Life::Life(const Life &otherInstance, bool newGen){
     if(newGen){//para gerar nova geracao
 
@@ -140,7 +183,7 @@ Life::Life(const Life &otherInstance, bool newGen){
         //Analisando o vetor (da instancia passada) das celulas mortas vizinhas as celulas vivas
 
         //Declarando vetor temporario para armazenar as coordenadas na instancia passada
-        std::vector<std::pair<int,int>> _deadNBCells;
+        std::vector<std::pair<size_t,size_t>> _deadNBCells;
         //Recuperando as coordenadas
         otherInstance.getDeadNBCells(_deadNBCells);
 
@@ -164,12 +207,28 @@ Life::Life(const Life &otherInstance, bool newGen){
     }
 }
 
+/*!
+\brief Construtor padrão
+Quando nenhum parametro for passado, o construtor padrão será usado
+inicializa todas as variaveis com valores nao significativos
+\return : instancia da classe Life
+*/
 Life::Life( void ):_height(0), _width(0), _matriz(NULL), _hash(0),_generation(0){}
 
+/*!
+\brief Construtor move
+Função construtora que move o conteúdo de uma variavel para outra, e zera o conteudo da variavel original.
+\param Life &&otherInstance : variavel que guarda a instancia que tera seus valores movidos
+\return : instancia da classe Life
+*/
 Life::Life(Life &&otherInstance):_height(0), _width(0), _matriz(NULL), _hash(0),_generation(0){
     *this = std::move(otherInstance);
 }
 
+/*!
+\brief Destrutor
+Função destrutora que desaloca a matriz, invalidando o objeto
+*/
 Life::~Life(){
     for(int i = 0; i < (int) _height; i++){
         delete[] _matriz[i];
@@ -177,6 +236,12 @@ Life::~Life(){
     delete[] _matriz;
 }
 
+/*!
+\brief Operador move
+Implementacao do operador move da classe
+\param : objeto da classe em questao
+\return : objeto lhs pos atribuicao (por referencia)
+*/
 Life& Life::operator=(Life&& otherInstance){
     //so realizar operacoes de copia e desalocacao caso sejam objetos diferentes
     if (this != &otherInstance){
@@ -200,6 +265,12 @@ Life& Life::operator=(Life&& otherInstance){
     return *this;
 }
 
+/*!
+\brief Operador de copia
+Implementacao de operador de copia da classe
+\param : objeto da classe em questao, passado por referencia
+\return : objeto lhs pos atribuicao (por referencia)
+*/
 Life& Life::operator=( const Life& rhs ){
     //so realizar operacoes de copia e desalocacao caso sejam objetos diferentes
     if (this != &rhs){
@@ -228,17 +299,35 @@ Life& Life::operator=( const Life& rhs ){
     return *this;
 }
 
+
+/*!
+\brief Criador de hash
+Método que recebe um std::hash (Hasher) que cria um hash para uma string.
+O hash entao obtido sera salvo para o objeto atual
+\param hash<std::string> &Hasher : objeto da classe std::hash
+*/
 void Life::createHash(std::hash<std::string> &Hasher){
     _hash = Hasher(generateString(_aliveCells));
 }
 
+/*!
+\brief Adicionando ao mapa
+Metodo para adicionar a geração (valor) e hash atual (chave) dentro de um mapa, passado por parametro
+\param map<hash_t, gen_t> &HashDict : variavel que contem um objeto da classe std::map, o mapa em questao
+*/
 void Life::addToDict(std::map<hash_t, gen_t> &HashDict) const{
     HashDict[_hash] = _generation;
 }
 
-void Life::getDeadNBCells(std::vector<std::pair<int,int>> &v) const{
+/*!
+\brief Preenchedor de vector com celulas mortas relevantes
+Metodo para preencher vector com celulas mortas vizinhas a celulas vivas, sem duplicatas
+\param vector<std::pair<size_t,size_t>> &v : passagem por referencia de um vector que contem um par de inteiros,
+representando as coordenadas
+*/
+void Life::getDeadNBCells(std::vector<std::pair<size_t,size_t>> &v) const{
     //Declaracao de set temporario, para evitar duplicatas
-    std::set<std::pair<int,int>> tempSet;
+    std::set<std::pair<size_t,size_t>> tempSet;
 
     //Variaveis temporarias para auxilio
     int analizedLine, analizedColumn;
@@ -258,7 +347,7 @@ void Life::getDeadNBCells(std::vector<std::pair<int,int>> &v) const{
                 else if(analizedColumn >= (int) _width){analizedColumn = 0;}
 
                 //A celula em questao eh viva, e nao deve ser considerada
-                if((_aliveCells[k].first == analizedLine && _aliveCells[k].second == analizedColumn) ||
+                if(((int) _aliveCells[k].first == analizedLine && (int) _aliveCells[k].second == analizedColumn) ||
                         _matriz[analizedLine][analizedColumn])
                     continue;
 
@@ -274,22 +363,73 @@ void Life::getDeadNBCells(std::vector<std::pair<int,int>> &v) const{
     }
 }
 
+/*!
+\brief Indicador de estado de determinada celula
+Funcao booleana que retorna verdadeiro caso a celula presente nas coordenadas passadas estejam vivas
+\param size_t y : coordenada y da celula em questao
+\param size_t x : coordenada x da celula em questao
+\return : verdadeiro caso a celula esteja vivo, falso, caso contrario
+*/
 bool Life::isAlive(size_t y, size_t x) const{return _matriz[y][x];}
 
+/*!
+\brief Indicador de estado da configuracao atual
+Funcao booleana que retorna verdadeiro caso a matriz atual nao contenha celulas vivas
+\return : verdadeiro caso a configuracao atual seja extinta
+*/
 bool Life::isExtinct() const{return (_aliveCells.size() == 0);}
 
+/*!
+\brief Indicador de estabilidade da configuracao atual
+Funcao booleana que retorna verdadeiro caso a configuracao atual seja estavel
+\param std::map<hash_t, gen_t> &HashDict : mapa dos hashs (chaves) e geracoes (valores)
+\return : verdadeiro caso o hash da configuracao atual ja tenha sido adicionado no dicionario, indicando estabilidade
+*/
 bool Life::isStable(std::map<hash_t, gen_t> &HashDict) const{return (HashDict.count(_hash) > 0);}
 
+/*!
+\brief Funcao getter de altura
+Funcao que retorna a altura da matriz
+\return : retorna a altura da matriz
+*/
 size_t Life::getHeight() const{return _height;}
 
+/*!
+\brief Funcao getter de largura
+Funcao que retorna a largura da matriz
+\return : retorna a largura da matriz
+*/
 size_t Life::getWidth() const{return _width;}
 
+/*!
+\brief Funcao getter de primeira geracao com certo hash
+Funcao que retorna a primeira ocorrencia, dada por geracao, em que o hash da configuracao atual ocorreu
+\param std::map<hash_t, gen_t> &HashDict : mapa dos hashs (chaves) e geracoes (valores)
+\return : geracao em questao
+*/
 Life::gen_t Life::getHashFirstGen(std::map<hash_t, gen_t> &HashDict) const{return HashDict[_hash];}
 
+/*!
+\brief Funcao getter da geracao atual
+Funcao que retorna o valor da geracao atual
+\return : geracao em questao
+*/
 Life::gen_t Life::getGeneration() const{return _generation;}
 
+/*!
+\brief Funcao getter do hash atual
+Funcao que retorna o valor do hash atual
+\return : hash em questao
+*/
 Life::hash_t Life::getHash() const{return _hash;}
 
+/*!
+\brief Operador <<
+Implementacao do operador << para impressao de objeto da classe
+\param std::ostream& os : fluxo de saida, passado por referencia
+\param const Life& life : objeto const da classe, passado por referencia
+\return : fluxo de saida, por referencia
+*/
 std::ostream& operator<< (std::ostream& os, const Life& life){
     //impressao da geracao atual
     os << "Current generation: " << life.getGeneration() << '\n';
