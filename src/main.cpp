@@ -12,6 +12,9 @@
 
 int main(int argc, char *argv[])
 {
+    char control;
+
+    //parsing arg
     std::string inputFile;
     if(argc == 2){
         inputFile = argv[argc - 1];
@@ -35,7 +38,6 @@ int main(int argc, char *argv[])
 
 
     //countdown
-    std::cout << "In order to stop the game, press [Ctrl + C]\n";
     std::cout << "Starting in\n3...\n";std::this_thread::sleep_for (std::chrono::seconds(1));
     std::cout << "2...\n";std::this_thread::sleep_for (std::chrono::seconds(1));
     std::cout << "1...\n";std::this_thread::sleep_for (std::chrono::seconds(1));
@@ -79,12 +81,20 @@ int main(int argc, char *argv[])
         //atualizando a geracao atual, e invalidando e desalocando a varaivel nextGeneration
         currentGeneration = nextGeneration;
 
-        //sleep for a while
-        std::this_thread::sleep_for (std::chrono::milliseconds(333));
+        while(true){
+            std::cout << "Do you wish do continue? (Y/N)\n-> ";
+            std::cin >> control;
+            if(control == 'Y' || control == 'N') break;
+        }
+        if(control == 'N') break;
+
+        std::cout << '\n';
     }
 
     std::cout << "Exiting... \n";
     ofs << "--END OF LOG--\n";
     //closing output file stream
     ofs.close();
+
+    return 0;
 }
