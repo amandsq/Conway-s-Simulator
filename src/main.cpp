@@ -10,6 +10,12 @@
    \author Amanda Albuquerque e Paulo Medeiros.
 */
 
+
+/*!
+   \brief Funcao main do projeto
+   \param Argumentos passados por linha de comando
+   \return 0, caso a execucao ocorra sem erros; 1, caso contrario
+*/
 int main(int argc, char *argv[])
 {
     char control;
