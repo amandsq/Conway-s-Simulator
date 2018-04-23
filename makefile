@@ -1,6 +1,7 @@
 # Pastas
 srcdir = ./src
 objdir = ./obj
+outdir = ./out
 incdir = ./include
 
 #Vars
@@ -8,10 +9,11 @@ objects = $(objdir)/main.o $(objdir)/life.o
 
 CPPFLAGS = -Wall -Iinclude/ -std=c++11
 
-.PHONY: clean clean_exe clean_obj
+.PHONY: clean clean_exe clean_obj clean_out
 .PHONY: simulator
 
 simulator: $(objects)
+	mkdir -p out
 	mkdir -p res
 	g++ -o simulator $(objects) $(FLAGS)
 	@echo "\n\n\nTo execute, type:"
@@ -25,7 +27,7 @@ $(objdir)/life.o: $(srcdir)/life.cpp
 	g++ $(CPPFLAGS) -c $(srcdir)/life.cpp -o $(objdir)/life.o
 
 # Limpa o executável e o diretorio de arquivos objeto
-clean: clean_exe clean_obj
+clean: clean_exe clean_obj clean_out
 
 #Limpa o executável
 clean_exe:
@@ -36,3 +38,8 @@ clean_exe:
 clean_obj:
 	@rm -rf $(objdir)
 	@echo "Object files were deleted"
+
+# Limpa diretorio de arquivos de saida
+clean_out:
+	@rm -rf $(outdir)
+	@echo "Output files were deleted"

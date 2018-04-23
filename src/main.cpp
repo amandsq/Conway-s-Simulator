@@ -1,5 +1,6 @@
 #include "life.hpp" //life class
 
+#include <fstream> //ofstream
 #include <chrono> //milliseconds
 #include <thread> //sleep_for
 
@@ -14,7 +15,10 @@ int main(int argc, char *argv[])
     std::string inputFile;
     if(argc == 2){
         inputFile = argv[argc - 1];
-    }else return 1;
+    }else{
+        std::cerr << "Wrong arguments format!\nUse ./simulator input_file\n";
+        return 1;
+    }
 
     //objeto que cria hash, dada uma string
     std::hash<std::string> Hasher;
@@ -25,6 +29,12 @@ int main(int argc, char *argv[])
     //inicializando a geracao atual com o arquivo de input
     Life currentGeneration(inputFile);
 
+    //creating and opening output file stream
+    std::ofstream ofs("out/log.dat");
+    if(!ofs) {std::cerr << "Bad output file creation\n"; return 1;}
+
+
+    //countdown
     std::cout << "In order to stop the game, press [Ctrl + C]\n";
     std::cout << "Starting in\n3...\n";std::this_thread::sleep_for (std::chrono::seconds(1));
     std::cout << "2...\n";std::this_thread::sleep_for (std::chrono::seconds(1));
@@ -38,12 +48,16 @@ int main(int argc, char *argv[])
 
         //impressao da geracao e da matriz atual
         std::cout << currentGeneration << std::endl;
+        ofs << currentGeneration << std::endl;
 
         //checando se a configuracao atual está extinta
         if(currentGeneration.isExtinct()){
             std::cout << "No more cells alive. Can't go on... I'm extinct...\n";
             std::cout << "Number of generations created: " << currentGeneration.getGeneration() << '\n';
-            return 0;
+
+            ofs << "No more cells alive. Can't go on... I'm extinct...\n";
+            ofs << "Number of generations created: " << currentGeneration.getGeneration() << '\n';
+            break;
         }
 
 
@@ -51,7 +65,10 @@ int main(int argc, char *argv[])
         if(currentGeneration.isStable(HashDict)){
             std::cout << "This generation is stable... \n";
             std::cout << "Number of generations created: " << currentGeneration.getGeneration() << '\n';
-            return 0;
+
+            ofs << "This generation is stable... \n";
+            ofs << "Number of generations created: " << currentGeneration.getGeneration() << '\n';
+            break;
         }
         //adicionando o hash atual para o dicionario
         currentGeneration.addToDict(HashDict);
@@ -65,4 +82,9 @@ int main(int argc, char *argv[])
         //sleep for a while
         std::this_thread::sleep_for (std::chrono::milliseconds(333));
     }
+
+    std::cout << "Exiting... \n";
+    ofs << "--END OF LOG--\n";
+    //closing output file stream
+    ofs.close();
 }
