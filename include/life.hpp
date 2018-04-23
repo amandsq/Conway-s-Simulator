@@ -18,7 +18,9 @@
 */
 
 /*! \class Life
-    \brief 
+\brief A classe Life tem como ideia guardar as açoes a atributos da entidade de mesmo nome. Basicamente,
+estamos trabalhando com uma matriz das celulas (aqui uma matriz de booleano), indicando o estado de cada celula em sua coordenada.
+Junto a isso, temos alguns atributos, como o tamanho da matriz, a geracao da configuracao, entre outros.
 */
 class Life
 {
