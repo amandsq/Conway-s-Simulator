@@ -13,6 +13,9 @@ This project has a *Doxygen* documentation. In order to generate it, use
 ```
 doxygen Doxyfile
 ```
+### Output
+An output is created, inside the (also created) *out* directory. It consists of a log from the execution.
+
 ## Compiling
 Once you've [downloaded](https://github.com/pauloamed/Conway-s-Simulator/archive/master.zip), you will need the following to compile
 ```
